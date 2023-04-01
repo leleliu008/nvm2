@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - run: apk update
-      - run: apk add python3 tree cmake ninja gcc pkgconf libc-dev curl-dev openssl-dev libgit2-dev libarchive-dev yaml-dev jansson-dev sqlite-dev
+      - run: apk add python3 linux-headers tree cmake ninja gcc pkgconf libc-dev curl-dev openssl-dev libgit2-dev libarchive-dev yaml-dev jansson-dev sqlite-dev
 
       - uses: actions/checkout@main
 
