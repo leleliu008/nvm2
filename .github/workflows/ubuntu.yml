@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - run:  apt -y update
-      - run:  apt -y install cmake ninja-build pkg-config g++ linux-headers-generic  curl zip unzip tar git
+      - run:  apt -y install tree cmake ninja-build pkg-config g++ linux-headers-generic  curl zip unzip tar git
 
       - uses: actions/checkout@v3
 
@@ -50,77 +50,45 @@ jobs:
       - run:  cmake --install build.d
 
 
-      - run:  ./output/bin/uppm
+      - run:  ./output/bin/nvm2
 
-      - run:  ./output/bin/uppm --help
-      - run:  ./output/bin/uppm --version
+      - run:  ./output/bin/nvm2 --help
+      - run:  ./output/bin/nvm2 --version
 
-      - run:  ./output/bin/uppm -h
-      - run:  ./output/bin/uppm -V
+      - run:  ./output/bin/nvm2 -h
+      - run:  ./output/bin/nvm2 -V
 
-      - run:  ./output/bin/uppm env
-      - run:  ./output/bin/uppm env -v
+      - run:  ./output/bin/nvm2 sysinfo
 
-      - run:  ./output/bin/uppm integrate zsh
+      - run:  ./output/bin/nvm2 env
 
-      - run:  ./output/bin/uppm update
+      - run:  ./output/bin/nvm2 integrate zsh
+      - run:  ./output/bin/nvm2 integrate zsh -v
 
-      - run:  ./output/bin/uppm search zip
+      - run:  ./output/bin/nvm2 ls-available
+      - run:  ./output/bin/nvm2 ls-available -v
 
-      - run:  ./output/bin/uppm depends zip
-      - run:  ./output/bin/uppm depends android-sdk
-      - run:  ./output/bin/uppm depends android-sdk -t box
-      - run:  ./output/bin/uppm depends android-sdk -t dot
+      - run:  ./output/bin/nvm2 install 19.8.0
 
-      - run:  ./output/bin/uppm info @all
-      - run:  ./output/bin/uppm info unzip
-      - run:  ./output/bin/uppm info unzip --json
-      - run:  ./output/bin/uppm info unzip --yaml
-      - run:  ./output/bin/uppm info unzip version
-      - run:  ./output/bin/uppm info unzip license
-      - run:  ./output/bin/uppm info unzip summary
-      - run:  ./output/bin/uppm info unzip webpage
-      - run:  ./output/bin/uppm info unzip bin-url
-      - run:  ./output/bin/uppm info unzip bin-sha
-      - run:  ./output/bin/uppm info unzip install
-      - run:  ./output/bin/uppm info unzip formula
+      - run:  ./output/bin/nvm2 info 19.8.0
+      - run:  ./output/bin/nvm2 info 19.8.0 --yaml
+      - run:  ./output/bin/nvm2 info 19.8.0 --json
+      - run:  ./output/bin/nvm2 info 19.8.0 installed-dir
+      - run:  ./output/bin/nvm2 info 19.8.0 installed-timestamp-unix
+      - run:  ./output/bin/nvm2 info 19.8.0 installed-timestamp-iso-8601
+      - run:  ./output/bin/nvm2 info 19.8.0 installed-timestamp-rfc-3339
 
-      - run:  ./output/bin/uppm fetch   gzip
-      - run:  ./output/bin/uppm fetch   gsed -v
+      - run:  ./output/bin/nvm2 exec 19.8.0 node --version
 
-      - run:  ./output/bin/uppm install unzip
+      - run:  ./output/bin/nvm2 tree 19.8.0 -L 3
 
-      - run:  ./output/bin/uppm info unzip installed-dir
-      - run:  ./output/bin/uppm info unzip installed-files
-      - run:  ./output/bin/uppm info unzip installed-receipt-path
-      - run:  ./output/bin/uppm info unzip installed-receipt-json
-      - run:  ./output/bin/uppm info unzip installed-receipt-yaml
-      - run:  ./output/bin/uppm info unzip installed-timestamp-unix
-      - run:  ./output/bin/uppm info unzip installed-timestamp-iso-8601
-      - run:  ./output/bin/uppm info unzip installed-timestamp-rfc-3339
-      - run:  ./output/bin/uppm info unzip installed-version
+      - run:  ./output/bin/nvm2 ls-installed
+      - run:  ./output/bin/nvm2 ls-installed -v
 
-      - run:  ./output/bin/uppm tree unzip
-      - run:  ./output/bin/uppm tree unzip -L 3
+      - run:  ./output/bin/nvm2 is-available 19.8.0
+      - run:  ./output/bin/nvm2 is-installed 19.8.0
 
-      - run: |
-          sed -i '/^version: /c version: 6.0.28' $(./output/bin/uppm info unzip formula | head -n 1 | cut -d ' ' -f2)
+      - run:  ./output/bin/nvm2 reinstall 19.8.0
+      - run:  ./output/bin/nvm2 uninstall 19.8.0
 
-      - run:  ./output/bin/uppm ls-available
-      - run:  ./output/bin/uppm ls-installed
-      - run:  ./output/bin/uppm ls-outdated
-
-      - run:  ./output/bin/uppm is-available curl
-      - run:  ./output/bin/uppm is-installed unzip
-      - run:  ./output/bin/uppm is-outdated  unzip
-
-      - run:  ./output/bin/uppm upgrade   unzip
-      - run:  ./output/bin/uppm reinstall unzip
-      - run:  ./output/bin/uppm uninstall unzip
-
-
-      - run:  ./output/bin/uppm formula-repo-list
-      - run:  ./output/bin/uppm formula-repo-add my_repo https://github.com/leleliu008/uppm-formula-repository-linux-x86_64
-      - run:  ./output/bin/uppm formula-repo-del my_repo
-
-      - run:  ./output/bin/uppm cleanup
+      - run:  ./output/bin/nvm2 cleanup

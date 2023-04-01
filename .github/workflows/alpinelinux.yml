@@ -27,6 +27,7 @@ jobs:
       - run:  cmake --build   build.d
       - run:  cmake --install build.d
 
+
       - run:  ./output/bin/nvm2
 
       - run:  ./output/bin/nvm2 --help

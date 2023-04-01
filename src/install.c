@@ -440,14 +440,26 @@ int nvm2_install(const char * versionName, const char * siteUrl, bool fromSource
                 snprintf(tarballFileNameBuf, tarballFileNameBufSize, "node-v%s-darwin-arm64.tar.xz", versionName);
             }
         } else if (strcmp(osKind, "linux") == 0) {
-            if (strcmp(osArch, "x86_64") == 0) {
-                snprintf(tarballFileNameBuf, tarballFileNameBufSize, "node-v%s-linux-x64.tar.xz", versionName);
-            } else if (strcmp(osArch, "aarch64") == 0) {
-                snprintf(tarballFileNameBuf, tarballFileNameBufSize, "node-v%s-linux-arm64.tar.xz", versionName);
-            } else if (strcmp(osArch, "ppc64le") == 0) {
-                snprintf(tarballFileNameBuf, tarballFileNameBufSize, "node-v%s-linux-ppc64le.tar.xz", versionName);
-            } else if (strcmp(osArch, "s390x") == 0) {
-                snprintf(tarballFileNameBuf, tarballFileNameBufSize, "node-v%s-linux-s390x.tar.xz", versionName);
+            int libc = sysinfo_libc();
+
+            if (libc < 0) {
+                perror(NULL);
+                return NVM2_ERROR;
+            }
+
+            if (libc == 1) { //glibc
+                if (strcmp(osArch, "x86_64") == 0) {
+                    snprintf(tarballFileNameBuf, tarballFileNameBufSize, "node-v%s-linux-x64.tar.xz", versionName);
+                } else if (strcmp(osArch, "aarch64") == 0) {
+                    snprintf(tarballFileNameBuf, tarballFileNameBufSize, "node-v%s-linux-arm64.tar.xz", versionName);
+                } else if (strcmp(osArch, "ppc64le") == 0) {
+                    snprintf(tarballFileNameBuf, tarballFileNameBufSize, "node-v%s-linux-ppc64le.tar.xz", versionName);
+                } else if (strcmp(osArch, "s390x") == 0) {
+                    snprintf(tarballFileNameBuf, tarballFileNameBufSize, "node-v%s-linux-s390x.tar.xz", versionName);
+                }
+            } else {
+                fromSource = true;
+                snprintf(tarballFileNameBuf, tarballFileNameBufSize, "node-v%s.tar.xz", versionName);
             }
         } else {
             fromSource = true;
