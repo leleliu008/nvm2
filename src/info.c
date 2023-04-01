@@ -75,7 +75,7 @@ int nvm2_info(const char * versionName, const char * key) {
         nvm2_receipt_free(receipt);
 
         return NVM2_OK;
-    } else if (strcmp(key, "location") == 0) {
+    } else if (strcmp(key, "installed-dir") == 0) {
         int ret = nvm2_check_if_the_given_argument_matches_version_name_pattern(versionName);
 
         if (ret != NVM2_OK) {

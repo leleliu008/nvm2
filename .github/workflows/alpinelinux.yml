@@ -50,10 +50,10 @@ jobs:
       - run:  ./output/bin/nvm2 info 19.8.0
       - run:  ./output/bin/nvm2 info 19.8.0 --yaml
       - run:  ./output/bin/nvm2 info 19.8.0 --json
-      - run:  ./output/bin/nvm2 info 19.8.0 location
-      - run:  ./output/bin/nvm2 info 19.8.0 timestamp-unix
-      - run:  ./output/bin/nvm2 info 19.8.0 timestamp-iso-8601
-      - run:  ./output/bin/nvm2 info 19.8.0 timestamp-rfc-3339
+      - run:  ./output/bin/nvm2 info 19.8.0 installed-dir
+      - run:  ./output/bin/nvm2 info 19.8.0 installed-timestamp-unix
+      - run:  ./output/bin/nvm2 info 19.8.0 installed-timestamp-iso-8601
+      - run:  ./output/bin/nvm2 info 19.8.0 installed-timestamp-rfc-3339
 
       - run:  ./output/bin/nvm2 exec 19.8.0 node --version
 

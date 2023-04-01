@@ -302,10 +302,10 @@ all relevant dirs and files are located in `~/.nvm2` directory.
         nvm2 info 8.15.0
         nvm2 info 19.8.0 --yaml
         nvm2 info 19.8.0 --json
-        nvm2 info 19.8.0 location
-        nvm2 info 19.8.0 timestamp-unix
-        nvm2 info 19.8.0 timestamp-iso-8601
-        nvm2 info 19.8.0 timestamp-rfc-3339
+        nvm2 info 19.8.0 installed-dir
+        nvm2 info 19.8.0 installed-timestamp-unix
+        nvm2 info 19.8.0 installed-timestamp-iso-8601
+        nvm2 info 19.8.0 installed-timestamp-rfc-3339
         
 *   **list the installed files of the given installed version in a tree-like format**
         
