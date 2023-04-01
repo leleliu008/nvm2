@@ -254,39 +254,24 @@ all relevant dirs and files are located in `~/.nvm2` directory.
         nvm2 upgrade-self
         nvm2 upgrade-self -v
         
-*   **search all available versions whose name matches the given regular expression pattern**
+*   **show Node.js Release Schedule**
         
-        nvm2 search curl
-        nvm2 search lib
-        
-*   **show information of the given versions**
-        
-        nvm2 info 8.15.0
-        
-*   **install versions**
-        
-        nvm2 install 8.15.0
-        nvm2 install 8.15.0 -v
-        nvm2 install 8.15.0 -v --from-source --site=https://mirrors.tuna.tsinghua.edu.cn/nodejs-release
-        
-*   **reinstall versions**
-        
-        nvm2 reinstall 8.15.0
-        nvm2 reinstall 8.15.0 -v
-        
-*   **uninstall versions**
-
-        nvm2 uninstall 8.15.0
-        nvm2 uninstall 8.15.0 -v
+        nvm2 show-release-schedule
+        nvm2 show-release-schedule -v
         
 *   **list all available versions**
         
         nvm2 ls-available
+        nvm2 ls-available -v
+        
+*   **list all available LTS(Long Term Support) versions**
+        
         nvm2 ls-available --lts
         
 *   **list all installed versions**
         
         nvm2 ls-installed
+        nvm2 ls-installed -v
         
 *   **check if the given version is available ?**
         
@@ -296,24 +281,42 @@ all relevant dirs and files are located in `~/.nvm2` directory.
         
         nvm2 is-installed 8.15.0
         
-*   **run any arbitrary command in a subshell with the desired version of node**
+*   **install the given version**
         
-        nvm2 exec 8.15.0 node --version
-        nvm2 exec 8.15.0 npm  --version
+        nvm2 install 8.15.0
+        nvm2 install 8.15.0 -v
+        nvm2 install 8.15.0 -v --from-source --site=https://mirrors.tuna.tsinghua.edu.cn/nodejs-release
+        
+*   **reinstall the given version**
+        
+        nvm2 reinstall 8.15.0
+        nvm2 reinstall 8.15.0 -v
+        
+*   **uninstall the given version**
+
+        nvm2 uninstall 8.15.0
+        nvm2 uninstall 8.15.0 -v
+        
+*   **show information of the given installed version**
+        
+        nvm2 info 8.15.0
+        nvm2 info 19.8.0 --yaml
+        nvm2 info 19.8.0 --json
+        nvm2 info 19.8.0 location
+        nvm2 info 19.8.0 timestamp-unix
+        nvm2 info 19.8.0 timestamp-iso-8601
+        nvm2 info 19.8.0 timestamp-rfc-3339
         
 *   **list the installed files of the given installed version in a tree-like format**
         
         nvm2 tree 8.15.0
         nvm2 tree 8.15.0 -L 3
         
-*   **show the installed directory of the desired version of node**
+*   **run any arbitrary command in a subshell with the desired version of node**
         
-        nvm2 prefix 8.15.0
+        nvm2 exec 8.15.0 node --version
+        nvm2 exec 8.15.0 npm  --version
         
-*   **generate url-transform sample**
-
-        nvm2 gen-url-transform-sample
-
 *   **extra common used utilities**
         
         nvm2 util zlib-deflate -L 6 < input/file/path
@@ -360,17 +363,3 @@ all relevant dirs and files are located in `~/.nvm2` directory.
     ```
 
     In general, you don't need to set this environment variable, but, if you encounter the reporting `the SSL certificate is invalid`, trying to run above commands in your terminal will do the trick.
-
-*   **UPPM_URL_TRANSFORM**
-
-    ```bash
-    export UPPM_URL_TRANSFORM=/path/of/url-transform
-    ```
-
-    `/path/of/url-transform` command would be invoked as `/path/of/url-transform <URL>`
-
-    `/path/of/url-transform` command must output a `<URL>`
-
-    you can generate a url-transform sample via `nvm2 gen-url-transform-sample`
-
-    If you want to change the request url, you can set this environment variable. It is very useful for chinese users.

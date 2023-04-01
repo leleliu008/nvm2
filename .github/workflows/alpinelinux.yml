@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - run: apk update
-      - run: apk add cmake ninja gcc pkgconf libc-dev curl-dev openssl-dev libgit2-dev libarchive-dev yaml-dev jansson-dev sqlite-dev
+      - run: apk add tree cmake ninja gcc pkgconf libc-dev curl-dev openssl-dev libgit2-dev libarchive-dev yaml-dev jansson-dev sqlite-dev
 
       - uses: actions/checkout@main
 
@@ -50,9 +50,12 @@ jobs:
       - run:  ./output/bin/nvm2 info 19.8.0
       - run:  ./output/bin/nvm2 info 19.8.0 --yaml
       - run:  ./output/bin/nvm2 info 19.8.0 --json
-      - run:  ./output/bin/nvm2 info 19.8.0 installed-timestamp-unix
-      - run:  ./output/bin/nvm2 info 19.8.0 installed-timestamp-iso-8601
-      - run:  ./output/bin/nvm2 info 19.8.0 installed-timestamp-rfc-3339
+      - run:  ./output/bin/nvm2 info 19.8.0 location
+      - run:  ./output/bin/nvm2 info 19.8.0 timestamp-unix
+      - run:  ./output/bin/nvm2 info 19.8.0 timestamp-iso-8601
+      - run:  ./output/bin/nvm2 info 19.8.0 timestamp-rfc-3339
+
+      - run:  ./output/bin/nvm2 exec 19.8.0 node --version
 
       - run:  ./output/bin/nvm2 tree 19.8.0 -L 3
 

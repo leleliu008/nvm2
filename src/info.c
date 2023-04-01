@@ -8,15 +8,10 @@
 #include <jansson.h>
 
 #include "core/log.h"
+
 #include "nvm2.h"
 
 int nvm2_info(const char * versionName, const char * key) {
-    int ret = nvm2_check_if_the_given_argument_matches_version_name_pattern(versionName);
-
-    if (ret != NVM2_OK) {
-        return ret;
-    }
-
     if ((key == NULL) || (strcmp(key, "") == 0) || (strcmp(key, "--yaml") == 0)) {
         const char * const userHomeDir = getenv("HOME");
 
@@ -78,6 +73,34 @@ int nvm2_info(const char * versionName, const char * key) {
         printf("timestamp: %s\n", buff);
 
         nvm2_receipt_free(receipt);
+
+        return NVM2_OK;
+    } else if (strcmp(key, "location") == 0) {
+        int ret = nvm2_check_if_the_given_argument_matches_version_name_pattern(versionName);
+
+        if (ret != NVM2_OK) {
+            return ret;
+        }
+
+        const char * const userHomeDir = getenv("HOME");
+
+        if (userHomeDir == NULL) {
+            return NVM2_ERROR_ENV_HOME_NOT_SET;
+        }
+
+        size_t userHomeDirLength = strlen(userHomeDir);
+
+        if (userHomeDirLength == 0U) {
+            return NVM2_ERROR_ENV_HOME_NOT_SET;
+        }
+
+        size_t   versionInstalledDirLength = userHomeDirLength + strlen(versionName) + 17U;
+        char     versionInstalledDir[versionInstalledDirLength];
+        snprintf(versionInstalledDir, versionInstalledDirLength, "%s/.nvm2/versions/%s", userHomeDir, versionName);
+
+        printf("%s\n", versionInstalledDir);
+
+        return NVM2_OK;
     } else if (strcmp(key, "--json") == 0) {
         NVM2Receipt * receipt = NULL;
 
@@ -108,6 +131,8 @@ int nvm2_info(const char * versionName, const char * key) {
         json_decref(root);
 
         nvm2_receipt_free(receipt);
+
+        return NVM2_OK;
     } else if (strcmp(key, "installed-timestamp-unix") == 0) {
         NVM2Receipt * receipt = NULL;
 
@@ -120,6 +145,8 @@ int nvm2_info(const char * versionName, const char * key) {
         printf("%s\n", receipt->timestamp);
 
         nvm2_receipt_free(receipt);
+
+        return NVM2_OK;
     } else if (strcmp(key, "installed-timestamp-rfc-3339") == 0) {
         NVM2Receipt * receipt = NULL;
 
@@ -142,6 +169,8 @@ int nvm2_info(const char * versionName, const char * key) {
         printf("%s\n", buff);
 
         nvm2_receipt_free(receipt);
+
+        return NVM2_OK;
     } else if (strcmp(key, "installed-timestamp-iso-8601") == 0) {
         NVM2Receipt * receipt = NULL;
 
@@ -164,9 +193,9 @@ int nvm2_info(const char * versionName, const char * key) {
         printf("%s\n", buff);
 
         nvm2_receipt_free(receipt);
+
+        return NVM2_OK;
     } else {
         return NVM2_ERROR_ARG_IS_UNKNOWN;
     }
-
-    return ret;
 }

@@ -158,7 +158,7 @@ int nvm2_help() {
         "nvm2 ls-installed [-v]\n"
         "    list the installed versions.\n\n"
         "nvm2 cleanup\n"
-        "    cleanup the unused cache.\n"
+        "    cleanup the unused cache.\n\n\n"
         "nvm2 util zlib-deflate -L <LEVEL> < input/file/path\n"
         "    compress data using zlib deflate algorithm.\n\n"
         "    LEVEL >= 1 && LEVEL <= 9\n\n"
