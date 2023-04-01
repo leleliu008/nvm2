@@ -1,0 +1,134 @@
+#compdef nvm2
+
+_commands=(
+    '-h:show help of this command.'
+    '--help:show help of this command.'
+    '-V:show version of this.'
+    '--version:show version of this command.'
+    'info:show infomation of the given version or all available versions.'
+    'tree:list files of the given installed version in a tree-like format.'
+    'install:install versions.'
+    'reinstall:reinstall versions.'
+    'uninstall:uninstall versions.'
+    'cleanup:cleanup the unused cache.'
+    'upgrade-self:upgrade this software.'
+    'sysinfo:show your system information.'
+    'env:show current machine os info.'
+    'integrate:integrate zsh completions.'
+    'ls-available:list the available versions.'
+    'ls-installed:list the installed versions.'
+    'is-available:is the given version available.'
+    'is-installed:is the given version installed.'
+    'util:extra utilities.'
+)
+
+function _nvm2_commands() {
+    _describe 'command' _commands
+}
+
+function _nvm2_available_versions() {
+    local -a _available_versions
+    _available_versions=($(nvm2 ls-available 2>/dev/null))
+    _describe 'available-versions' _available_versions
+}
+
+function _nvm2_installed_versions() {
+    local -a _installed_versions
+    _installed_versions=($(nvm2 ls-installed 2>/dev/null))
+    _describe 'installed-versions' _installed_versions
+}
+
+function _nvm2_outdated_versions() {
+    local -a _outdated_versions
+    _outdated_versions=($(nvm2 ls-outdated 2>/dev/null | cut -d ' ' -f1))
+    _describe 'outdated-versions' _outdated_versions
+}
+
+function _nvm2() {
+    local context state state_descr line
+    typeset -A opt_args
+
+    _arguments \
+        '1: :_nvm2_commands' \
+        '*:: :->option'
+
+    case $state in
+        option)
+            case $words[1] in
+                integrate)
+                    _arguments \
+                        '1:what:(zsh)' \
+                        '--output-dir=-[set the output dir]:output-dir:{_files -/}' \
+                        '-v[verbose mode]'
+                    ;;
+                info)
+                    _arguments \
+                        '1:version-name:_nvm2_installed_versions' \
+                        '2:key:(installed-dir installed-receipt-path installed-receipt-json installed-receipt-yaml installed-timestamp-unix installed-timestamp-rfc-3339 installed-timestamp-iso-8601 installed-version)'
+                    ;;
+                tree)
+                    _arguments \
+                        '1:version-name:_nvm2_installed_versions' \
+                        '-L[level]:level:(3)' \
+                        '--dirsfirst[show dirs first]'
+                    ;;
+                install)
+                    _arguments \
+                        '*:version-name:_nvm2_available_versions' \
+                        '-v[verbose mode. many messages will be output to terminal]' \
+                        '-q[silent mode. no any messages will be output to terminal]'
+                    ;;
+                reinstall)
+                    _arguments \
+                        '*:version-name:_nvm2_installed_versions' \
+                        '-v[verbose mode.  many messages will be output to terminal]' \
+                        '-q[silent mode. no any messages will be output to terminal]'
+                    ;;
+                uninstall)
+                    _arguments \
+                        '*:version-name:_nvm2_installed_versions' \
+                        '-v[verbose mode.  many messages will be output to terminal]' \
+                        '-q[silent mode. no any messages will be output to terminal]'
+                    ;;
+                is-available)
+                    _arguments \
+                        '1:version-name:_nvm2_available_versions'
+                    ;;
+                is-installed)
+                    _arguments \
+                        '1:version-name:_nvm2_installed_versions'
+                    ;;
+                util)
+                    _arguments \
+                        '1:utility:(base16-encode base16-decode base64-encode base64-decode sha256sum zlib-deflate zlib-inflate which)' \
+                        '*:: :->utility-option'
+
+                    if [ "$state" = 'utility-option' ] ; then
+                        case $words[1] in
+                            base16-encode)
+                                ;;
+                            base16-decode)
+                                ;;
+                            base64-encode)
+                                ;;
+                            base64-decode)
+                                ;;
+                            zlib-deflate)
+                                _arguments '-L[level]:level:(1 2 3 4 5 6 7 8 9)'
+                                ;;
+                            zlib-inflate)
+                                ;;
+                            which)
+                                _arguments '1:cmd:()' '-a[find all]'
+                                ;;
+                        esac
+                    fi
+                    ;;
+                *)  ;;
+            esac
+            ;;
+        *);;
+    esac
+}
+
+_nvm2 "$@"

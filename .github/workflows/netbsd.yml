@@ -1,0 +1,115 @@
+name: NetBSD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  netbsd:
+    runs-on: macos-12
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [9]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: leleliu008/github-actions-vagrant@v1
+        with:
+          mem: 2048
+          box: generic/netbsd${{ matrix.version }}
+          run: |
+            run sudo pkgin -y install cmake ninja-build pkg-config clang curl libgit2 libarchive libyaml jansson sqlite
+
+            run cmake -S . -B   build.d -G Ninja -DCMAKE_INSTALL_PREFIX=./output -DCMAKE_VERBOSE_MAKEFILE=ON
+            run cmake --build   build.d
+            run cmake --install build.d
+
+
+            export LD_LIBRARY_PATH=/usr/pkg/lib
+
+            run sudo rm -rf /usr/pkg/etc/openssl
+            run sudo pkgin -y install mozilla-rootcerts
+            run sudo mozilla-rootcerts install
+
+            if [ ${{matrix.version}} -eq 8 ] ; then
+                export SSL_CERT_FILE=/usr/pkg/etc/openssl/certs/ca-certificates.crt
+            else
+                export SSL_CERT_FILE=/etc/openssl/certs/ca-certificates.crt
+            fi
+
+
+            run ./output/bin/uppm
+
+            run ./output/bin/uppm --help
+            run ./output/bin/uppm --version
+
+            run ./output/bin/uppm -h
+            run ./output/bin/uppm -V
+
+            run ./output/bin/uppm env
+            run ./output/bin/uppm env -v
+
+            run ./output/bin/uppm integrate zsh
+
+            run ./output/bin/uppm update
+
+            run ./output/bin/uppm search zip
+
+            run ./output/bin/uppm depends gzip
+
+            run ./output/bin/uppm info @all
+            run ./output/bin/uppm info gsed
+            run ./output/bin/uppm info gsed --json
+            run ./output/bin/uppm info gsed --yaml
+            run ./output/bin/uppm info gsed version
+            run ./output/bin/uppm info gsed license
+            run ./output/bin/uppm info gsed summary
+            run ./output/bin/uppm info gsed webpage
+            run ./output/bin/uppm info gsed bin-url
+            run ./output/bin/uppm info gsed bin-sha
+            run ./output/bin/uppm info gsed install
+            run ./output/bin/uppm info gsed formula
+
+            run ./output/bin/uppm fetch   gzip
+            run ./output/bin/uppm fetch   gtar -v
+
+            run ./output/bin/uppm install gsed
+
+            run ./output/bin/uppm info gsed installed-dir
+            run ./output/bin/uppm info gsed installed-files
+            run ./output/bin/uppm info gsed installed-receipt-path
+            run ./output/bin/uppm info gsed installed-receipt-json
+            run ./output/bin/uppm info gsed installed-receipt-yaml
+            run ./output/bin/uppm info gsed installed-timestamp-unix
+            run ./output/bin/uppm info gsed installed-timestamp-iso-8601
+            run ./output/bin/uppm info gsed installed-timestamp-rfc-3339
+            run ./output/bin/uppm info gsed installed-version
+
+            run ./output/bin/uppm tree gsed
+            run ./output/bin/uppm tree gsed -L 3
+
+            printf '%s\n' 'version: 1000' >> ~/.uppm/repos.d/offical-core/formula/gsed.yml
+
+            run ./output/bin/uppm ls-available
+            run ./output/bin/uppm ls-installed
+            run ./output/bin/uppm ls-outdated
+
+            run ./output/bin/uppm is-available curl
+            run ./output/bin/uppm is-installed gsed
+            run ./output/bin/uppm is-outdated  gsed
+
+            run ./output/bin/uppm upgrade   gsed
+            run ./output/bin/uppm reinstall gsed
+            run ./output/bin/uppm uninstall gsed
+
+
+            run ./output/bin/uppm formula-repo-list
+            run ./output/bin/uppm formula-repo-add my_repo https://github.com/leleliu008/uppm-formula-repository-linux-x86_64
+            run ./output/bin/uppm formula-repo-del my_repo
+
+            run ./output/bin/uppm cleanup
