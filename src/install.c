@@ -192,6 +192,8 @@ int nvm2_find_or_install_gmake(char ** pgmakePath, size_t * pgmakePathLength, co
     } else {
         LOG_STEP(true, false, stepN, "installing gmake")
 
+        ////////////////////////////////////////////////////////////////////////
+
         size_t   urlLength = strlen(binUrlGmake);
 
         size_t   fetchPhaseCmdLength = urlLength + 10U;
@@ -482,6 +484,16 @@ int nvm2_install(const char * versionName, const char * siteUrl, bool fromSource
     char     sha256sumTxtFilePath[sha256sumTxtFilePathLength];
     snprintf(sha256sumTxtFilePath, sha256sumTxtFilePathLength, "%s/node-v%s-SHASUMS256.txt", nvm2DownloadDir, versionName);
 
+    //////////////////////////////////////////////////////////////////////////
+
+    size_t   log1Length = sha256sumTxtFileUrlLength + 10U;
+    char     log1[log1Length];
+    snprintf(log1, log1Length, "Fetching %s", sha256sumTxtFileUrl);
+
+    LOG_RUN_CMD(true, false, log1)
+
+    //////////////////////////////////////////////////////////////////////////
+
     int ret = nvm2_http_fetch_to_file(sha256sumTxtFileUrl, sha256sumTxtFilePath, logLevel >= NVM2LogLevel_verbose, logLevel >= NVM2LogLevel_verbose);
 
     if (ret != NVM2_OK) {
@@ -546,7 +558,17 @@ int nvm2_install(const char * versionName, const char * siteUrl, bool fromSource
     char     tarballFileUrl[tarballFileUrlLength];
     snprintf(tarballFileUrl, tarballFileUrlLength, "%s/v%s/%s", siteUrl, versionName, tarballFileNameBuf);
 
+    int stepN = 1;
+
     if (needFetch) {
+        size_t   fetchPhaseCmdLength = tarballFileUrlLength + 10U;
+        char     fetchPhaseCmd[fetchPhaseCmdLength];
+        snprintf(fetchPhaseCmd, fetchPhaseCmdLength, "Fetching %s", tarballFileUrl);
+
+        LOG_RUN_CMD(true, false, fetchPhaseCmd)
+
+        //////////////////////////////////////////////////////////////////////////
+
         int ret = nvm2_http_fetch_to_file(tarballFileUrl, tarballFilePath, logLevel >= NVM2LogLevel_verbose, logLevel >= NVM2LogLevel_verbose);
 
         if (ret != NVM2_OK) {
@@ -653,11 +675,15 @@ int nvm2_install(const char * versionName, const char * siteUrl, bool fromSource
             return abs(ret) + NVM2_ERROR_ARCHIVE_BASE;
         }
 
-        ret = nvm2_find_or_install_gmake(&gmakePath, &gmakePathLength, osKind, osArch, versionInstallingDir, versionInstallingDirLength, nvm2DownloadDir, nvm2DownloadDirLength, 1);
+        ret = nvm2_find_or_install_gmake(&gmakePath, &gmakePathLength, osKind, osArch, versionInstallingDir, versionInstallingDirLength, nvm2DownloadDir, nvm2DownloadDirLength, stepN);
 
         if (ret != 0) {
             return ret;
         }
+
+        LOG_STEP(true, false, stepN, "installing nodejs")
+
+        //////////////////////////////////////////////////////////////////////////
 
         if (chdir(versionInstallingDir) != 0) {
             perror(versionInstallingDir);

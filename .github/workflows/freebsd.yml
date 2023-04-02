@@ -1,0 +1,77 @@
+name: FreeBSD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  freebsd:
+    runs-on: macos-12
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [12, 13]
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: leleliu008/github-actions-vagrant@v1
+        with:
+          mem: 2048
+          box: generic/freebsd${{ matrix.version }}
+          run: |
+            run pkg install -y cmake ninja gcc pkgconf curl openssl libgit2 libarchive libyaml jansson sqlite3 libnghttp2
+
+            run cmake -S . -B   build.d -G Ninja -DCMAKE_INSTALL_PREFIX=./output -DCMAKE_VERBOSE_MAKEFILE=ON
+            run cmake --build   build.d
+            run cmake --install build.d
+
+
+
+            run ./output/bin/nvm2
+
+            run ./output/bin/nvm2 --help
+            run ./output/bin/nvm2 --version
+
+            run ./output/bin/nvm2 -h
+            run ./output/bin/nvm2 -V
+
+            run ./output/bin/nvm2 sysinfo
+
+            run ./output/bin/nvm2 env
+
+            run ./output/bin/nvm2 integrate zsh
+            run ./output/bin/nvm2 integrate zsh -v
+
+            run ./output/bin/nvm2 ls-available
+            run ./output/bin/nvm2 ls-available -v
+
+            run pkg install -y python3
+            run ./output/bin/nvm2 install 19.8.0
+
+            run ./output/bin/nvm2 info 19.8.0
+            run ./output/bin/nvm2 info 19.8.0 --yaml
+            run ./output/bin/nvm2 info 19.8.0 --json
+            run ./output/bin/nvm2 info 19.8.0 installed-dir
+            run ./output/bin/nvm2 info 19.8.0 installed-timestamp-unix
+            run ./output/bin/nvm2 info 19.8.0 installed-timestamp-iso-8601
+            run ./output/bin/nvm2 info 19.8.0 installed-timestamp-rfc-3339
+
+            run ./output/bin/nvm2 exec 19.8.0 node --version
+
+            run pkg install -y tree
+            run ./output/bin/nvm2 tree 19.8.0 -L 3
+
+            run ./output/bin/nvm2 ls-installed
+            run ./output/bin/nvm2 ls-installed -v
+
+            run ./output/bin/nvm2 is-available 19.8.0
+            run ./output/bin/nvm2 is-installed 19.8.0
+
+            run ./output/bin/nvm2 reinstall 19.8.0
+            run ./output/bin/nvm2 uninstall 19.8.0
+
+            run ./output/bin/nvm2 cleanup
