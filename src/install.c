@@ -664,7 +664,7 @@ int nvm2_install(const char * versionName, const char * siteUrl, bool fromSource
             return ret;
         }
 
-        ret = nvm2_build_nodejs_from_source(versionInstallingDir, versionInstallingDirLength, -1, gmakePath, gmakePathLength, jobs);
+        ret = nvm2_build_nodejs_from_source(versionInstalledDir, versionInstalledDirLength, -1, gmakePath, gmakePathLength, jobs);
 
         free(gmakePath);
 
