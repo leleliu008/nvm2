@@ -297,11 +297,6 @@ int nvm2_build_nodejs_from_source(const char * versionInstalledDir, size_t versi
         jobs = ncpu;
     }
 
-    if (chdir(versionInstalledDir) != 0) {
-        perror(versionInstalledDir);
-        return NVM2_ERROR;
-    }
-
     size_t   configurePhaseCmdLength = versionInstalledDirLength + 32U;
     char     configurePhaseCmd[configurePhaseCmdLength];
     snprintf(configurePhaseCmd, configurePhaseCmdLength, "./configure --prefix=%s", versionInstalledDir);
@@ -662,6 +657,12 @@ int nvm2_install(const char * versionName, const char * siteUrl, bool fromSource
 
         if (ret != 0) {
             return ret;
+        }
+
+        if (chdir(versionInstallingDir) != 0) {
+            perror(versionInstallingDir);
+            free(gmakePath);
+            return NVM2_ERROR;
         }
 
         ret = nvm2_build_nodejs_from_source(versionInstalledDir, versionInstalledDirLength, -1, gmakePath, gmakePathLength, jobs);
